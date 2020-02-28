@@ -62,9 +62,10 @@ def scan_ports(addrP, portsP = None):
     for i in range(int(port_range[1]) - int(port_range[0])):
         threads[i].join()
 
-    for key in output:
-        print(output[key])
-
+    # for key in output:
+    #     print(output[key])
+    for port in range(int(port_range[0]), int(port_range[1])):
+        print(output[port])
 
 ## main function
 # checks to see if user input hostname/ip address argument
