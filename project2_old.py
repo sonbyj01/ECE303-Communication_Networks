@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
-
 import sys
 import getopt
 import socket
-import threading
 
 # Checks if ports
 def scan_ports(addrP, portsP = None):

@@ -1,34 +1,9 @@
 #!/usr/bin/env python3
-
 import sys
 import getopt
 import socket
 import threading
 
-# Checks if ports
-# def scan_ports(addrP, portsP = None):
-#     if portsP == None:
-#         port_range = ['1', '1024']
-#     else:
-#         port_range = portsP.split(',')
-#     remoteServerIP = socket.gethostbyname(addrP)  # performs a dns look up
-#     print("Checking from ports {} to {} on addr {}".format(port_range[0], port_range[1], remoteServerIP))
-#     try:
-#         for port in range(int(port_range[0]), int(port_range[1])):
-#             print(port)
-#             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#             result = sock.connect_ex((remoteServerIP, port))
-#             if result == 0:
-#                 print("Port {}: Open".format(port))
-#                 sock.close()
-#     except KeyboardInterrupt:
-#         sys.exit()
-#     except socket.gaierror:
-#         print("issue with hostname")
-#         sys.exit()
-#     except socket.error:
-#         print("cant connect to server")
-#         sys.exit()
 
 def TCP_connect(addrP, portP, outputP):
     TCPsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -40,6 +15,7 @@ def TCP_connect(addrP, portP, outputP):
     except:
         outputP[portP] = "Close:\t" + str(portP)
 # making a fast port scanner 26174743 questions
+
 
 def scan_ports(addrP, portsP = None):
     if portsP == None:
@@ -62,16 +38,16 @@ def scan_ports(addrP, portsP = None):
     for i in range(int(port_range[1]) - int(port_range[0])):
         threads[i].join()
 
-    # for key in output:
-    #     print(output[key])
     for port in range(int(port_range[0]), int(port_range[1])):
-        print(output[port])
+        if "Open" in output[port]:
+            print(output[port])
+
 
 ## main function
 # checks to see if user input hostname/ip address argument
 try:
-    addr = str(sys.argv[1])
-    print("Checking {}".format(addr))
+    address = str(sys.argv[1])
+    print("Checking {}".format(address))
 except:
     print("You need a hostname or IP address!")
     sys.exit()
@@ -89,4 +65,4 @@ except:
     o = None
     a = None
 
-scan_ports(addr, a)
+scan_ports(address, a)
