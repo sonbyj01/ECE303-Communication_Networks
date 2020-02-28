@@ -4,6 +4,7 @@ import sys
 import getopt
 import socket
 
+
 # Checks if ports
 def scan_ports(addrP, portsP = None):
     if portsP == None:
