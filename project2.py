@@ -4,6 +4,23 @@ import getopt
 import socket
 import threading
 
+common_ports = {
+    '21': 'ftp',
+    '22': 'ssh',
+    '23': 'telnet',
+    '25': 'smtp',
+    '53': 'domain name system',
+    '80': 'http',
+    '110': 'pop3',
+    '111': 'rpcbind',
+    '135': 'msrpc',
+    '139': 'netbios.ssn',
+    '143': 'imap',
+    '443': 'https',
+    '445': 'microsoft-ds',
+    '993': 'imaps',
+    '995': 'pop3s'
+}
 
 def TCP_connect(addrP, portP, outputP):
     TCPsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -11,9 +28,12 @@ def TCP_connect(addrP, portP, outputP):
     TCPsock.settimeout(10)
     try:
         TCPsock.connect((addrP, portP))
-        outputP[portP] = "Open:\t" + str(portP)
+        if str(portP) in common_ports:
+            outputP[portP] = "Open:\t{} -> {}".format(str(portP), common_ports[str(portP)])
+        else:
+            outputP[portP] = "Open:\t{}".format(str(portP))
     except:
-        outputP[portP] = "Close:\t" + str(portP)
+        outputP[portP] = "Close:\t{}".format(str(portP))
 # making a fast port scanner 26174743 questions
 
 
