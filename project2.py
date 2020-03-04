@@ -3,6 +3,7 @@ import sys
 import getopt
 import socket
 import threading
+import pyshark
 
 common_ports = {
     '21': 'ftp',
@@ -21,6 +22,11 @@ common_ports = {
     '993': 'imaps',
     '995': 'pop3s'
 }
+
+def os_detection(addrP):
+    capture = pyshark.RemoteCapture(addrP, 'wlo0')
+    capture.sniff(timeout=50)
+
 
 def TCP_connect(addrP, portP, outputP):
     TCPsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
