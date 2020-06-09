@@ -23,39 +23,40 @@ common_ports = {
     '995': 'pop3s'
 }
 
-def os_detection(addrP):
-    capture = pyshark.RemoteCapture(addrP, 'wlo0')
+
+def os_detection(address):
+    capture = pyshark.RemoteCapture(address, 'wlo0')
     capture.sniff(timeout=50)
 
 
-def TCP_connect(addrP, portP, outputP):
+def tcp_connect(address, port, output):
     TCPsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     TCPsock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     TCPsock.settimeout(10)
     try:
-        TCPsock.connect((addrP, portP))
-        if str(portP) in common_ports:
-            outputP[portP] = "Open:\t{} -> {}".format(str(portP), common_ports[str(portP)])
+        TCPsock.connect((address, port))
+        if str(port) in common_ports:
+            output[port] = "Open:\t{} -> {}".format(str(port), common_ports[str(port)])
         else:
-            outputP[portP] = "Open:\t{}".format(str(portP))
+            output[port] = "Open:\t{}".format(str(port))
     except:
-        outputP[portP] = "Close:\t{}".format(str(portP))
+        output[port] = "Close:\t{}".format(str(port))
 # making a fast port scanner 26174743 questions
 
 
-def scan_ports(addrP, portsP = None):
-    if portsP == None:
+def scan_ports(address, ports = None):
+    if ports == None:
         port_range = ['1', '1024']
     else:
-        port_range = portsP.split(',')
-    remoteServerIP = socket.gethostbyname(addrP)  # performs a dns look up
-    print("Checking from ports {} to {} on addr {}".format(port_range[0], port_range[1], remoteServerIP))
+        port_range = ports.split(',')
+    remote_server_ip = socket.gethostbyname(address)  # performs a dns look up
+    print("Checking from ports {} to {} on addr {}".format(port_range[0], port_range[1], remote_server_ip))
 
     threads = []
     output = {}
 
     for port in range(int(port_range[0]), int(port_range[1])):
-        t = threading.Thread(target=TCP_connect, args=(addrP, port, output))
+        t = threading.Thread(target=tcp_connect, args=(address, port, output))
         threads.append(t)
 
     for i in range(int(port_range[1]) - int(port_range[0])):
@@ -71,24 +72,29 @@ def scan_ports(addrP, portsP = None):
 
 ## main function
 # checks to see if user input hostname/ip address argument
-try:
-    address = str(sys.argv[1])
-    print("Checking {}".format(address))
-except:
-    print("You need a hostname or IP address!")
-    sys.exit()
+def main():
+    try:
+        address = str(sys.argv[1])
+        print("Checking {}".format(address))
+    except:
+        print("You need a hostname or IP address!")
+        sys.exit()
 
-# checks to see if the user gave a specific port range
-try:
-    opts, args = getopt.getopt(sys.argv[2:], "p:")
-except getopt.GetoptError as err:
-    print(err)
-    sys.exit(2)
+    # checks to see if the user gave a specific port range
+    try:
+        opts, args = getopt.getopt(sys.argv[2:], "p:")
+    except getopt.GetoptError as err:
+        print(err)
+        sys.exit(2)
 
-try:
-    o, a = opts[0]
-except:
-    o = None
-    a = None
+    try:
+        o, a = opts[0]
+    except:
+        o = None
+        a = None
 
-scan_ports(address, a)
+    scan_ports(address, a)
+
+
+if __name__ == '__main__':
+    main()
